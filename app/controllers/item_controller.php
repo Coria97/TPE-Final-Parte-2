@@ -20,6 +20,19 @@
       $items = $this->itemModel->index($order);
       $this->jsonView->response($items, 200); 
     }
+
+    public function show($params)
+    {
+      if(isset($params[":id"]))
+      {
+        $item = $this->itemModel->show($params[":id"]);
+        if($item)
+          $this->jsonView->response($item, 200); 
+        else
+          $this->jsonView->response("Item with id = " . $params[":id"] . " not found ", 404);
+      } 
+    }
+    
   }
 
 ?>

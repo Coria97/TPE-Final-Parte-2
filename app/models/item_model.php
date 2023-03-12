@@ -16,5 +16,14 @@
       return $query->fetchAll(PDO::FETCH_OBJ);
     }    
 
+    public function show($id)
+    {
+      xdebug_break();
+
+      $query = $this->db->prepare("SELECT i.*, c.name 'category_name' FROM Item i INNER JOIN Category c ON i.fk_id_category = c.id where i.id = ?");
+      $query->execute([$id]);
+      return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
   }
 ?>
