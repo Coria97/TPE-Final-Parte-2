@@ -18,11 +18,16 @@
 
     public function show($id)
     {
-      xdebug_break();
-
       $query = $this->db->prepare("SELECT i.*, c.name 'category_name' FROM Item i INNER JOIN Category c ON i.fk_id_category = c.id where i.id = ?");
       $query->execute([$id]);
       return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function create($params)
+    {
+      $query = $this->db->prepare("INSERT INTO Item (name, description, price, fk_id_category) VALUES (?,?,?,?)");
+      $query->execute([$params->name,$params->description,$params->price,$params->fk_id_category]);
+      return $this->db->lastInsertId();
     }
 
   }
