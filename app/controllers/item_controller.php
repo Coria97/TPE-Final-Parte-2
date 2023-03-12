@@ -1,5 +1,6 @@
 <?php
-  
+
+  require_once './app/models/category_model.php';
   require_once './app/models/item_model.php';
   require_once './app/views/json_view.php';
 
@@ -7,21 +8,30 @@
   {
     private $jsonView;
     private $itemModel;
+    private $controllerHelper;
+    private $date;
 
     public function __construct()
     {
+      $this->categoryModel = new CategoryModel();
       $this->itemModel = new ItemModel();
       $this->jsonView = new JSONView();
+      $this->date = file_get_contents("php://input");
     }
 
-    public function index()
+    private function getDate()
+    { 
+      return json_decode($this->date); 
+    } 
+
+    public function index($params = null)
     {
       $order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
       $items = $this->itemModel->index($order);
       $this->jsonView->response($items, 200); 
     }
 
-    public function show($params)
+    public function show($params = null)
     {
       if(isset($params[":id"]))
       {
@@ -33,6 +43,19 @@
       } 
     }
     
+    public function create($params = null)
+    { 
+      $body = $this->getDate();
+      if (!empty($body->name) && !empty($body->description) && !empty($body->price) && !empty($body->fk_id_category) && ($this->categoryModel->exists($body->fk_id_category)))
+      {
+        $id = $this->itemModel->create($body);
+        $item = $this->itemModel->show($id);
+        $this->jsonView->response($item, 201); 
+      }
+      else
+        $this->jsonView->response("Invalid params", 400); 
+    }
+
   }
 
 ?>
