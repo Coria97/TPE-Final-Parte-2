@@ -8,6 +8,7 @@
    $router = new Router();
 
    $router->addRoute("items", "GET", "ItemController", "index");
+   $router->addRoute("item/:id", "GET", "ItemController", "show");
 
    $router->route($_GET['resource'], $_SERVER['REQUEST_METHOD']); 
 
