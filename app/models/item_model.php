@@ -57,5 +57,11 @@
       return (!empty($item)) ? true : false;
     }
 
+    public function delete($id)
+    {
+      $query = $this->db->prepare("DELETE FROM Item WHERE id = ?");
+      $query->execute([$id]); 
+    }
+
   }
 ?>
