@@ -33,14 +33,16 @@
 
     public function show($params = null)
     {
-      if(isset($params[":id"]))
+      if ($this->itemModel->exists($params[":id"]))
       {
         $item = $this->itemModel->show($params[":id"]);
         if($item)
           $this->jsonView->response($item, 200); 
         else
           $this->jsonView->response("Item with id = " . $params[":id"] . " not found ", 404);
-      } 
+      }
+      else
+        $this->jsonView->response("Item with id = " . $params[":id"] . " not exists ", 400); 
     }
     
     public function create($params = null)
@@ -54,6 +56,24 @@
       }
       else
         $this->jsonView->response("Invalid params", 400); 
+    }
+
+    public function update($params = null)
+    {
+      if ($this->itemModel->exists($params[":id"]))
+      {
+        $body = $this->getDate();
+        if (!empty($body->name) || !empty($body->description) || !empty($body->price) || (!empty($body->fk_id_category) && ($this->categoryModel->exists($body->fk_id_category))))
+        {
+          $this->itemModel->update($params[":id"],$body);
+          $item = $this->itemModel->show($params[":id"]);
+          $this->jsonView->response($item, 201); 
+        }
+        else
+          $this->jsonView->response("Unprocessable Entity", 422);
+      }
+      else
+        $this->jsonView->response("Item with id = " . $params[":id"] . " not exists ", 404); 
     }
 
   }
