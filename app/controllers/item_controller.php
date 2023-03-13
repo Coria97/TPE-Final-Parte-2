@@ -25,9 +25,8 @@
     } 
 
     public function index($params = null)
-    {
-      $order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
-      $items = $this->itemModel->index($order);
+    { 
+      $items = $this->itemModel->index($_GET);
       $this->jsonView->response($items, 200); 
     }
 
