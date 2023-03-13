@@ -30,5 +30,32 @@
       return $this->db->lastInsertId();
     }
 
+    public function update($id, $params)
+    {
+      $this->db->exec($this->buildQuery($id, $params));
+    }
+
+    private function buildQuery($id, $params)
+    {
+      $query = "UPDATE Item SET ";
+      $columns_to_update = array();
+      foreach (get_object_vars($params) as $key => $value) {
+        if (!empty($value)) {
+          $columns_to_update[] = "$key='$value'";
+        }
+      }
+      $query .= implode(',', $columns_to_update);
+      $query .= " WHERE id='$id'";
+      return $query;
+    }
+
+    public function exists($id)
+    {
+      $query = $this->db->prepare("SELECT * FROM Item WHERE id = ?");
+      $query->execute([$id]);
+      $item = $query->fetchAll(PDO::FETCH_ASSOC);
+      return (!empty($item)) ? true : false;
+    }
+
   }
 ?>
