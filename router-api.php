@@ -11,6 +11,7 @@
   $router->addRoute("item/:id", "GET", "ItemController", "show");
   $router->addRoute("item", "POST", "ItemController", "create");
   $router->addRoute("item/:id", "PUT", "ItemController", "update");
+  $router->addRoute("item/:id", "DELETE", "ItemController", "delete");
 
   $router->route($_GET['resource'], $_SERVER['REQUEST_METHOD']); 
 

@@ -76,6 +76,17 @@
         $this->jsonView->response("Item with id = " . $params[":id"] . " not exists ", 404); 
     }
 
+    public function delete($params = null)
+    {
+      if ($this->itemModel->exists($params[":id"]))
+      {
+        $this->itemModel->delete($params[":id"]);
+        $this->jsonView->response("Item deleted", 202); 
+      }
+      else
+        $this->jsonView->response("Item with id = " . $params[":id"] . " not exists ", 404); 
+    }  
+    
   }
 
 ?>
