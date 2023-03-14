@@ -66,8 +66,9 @@
     private function buildQueryIndex($params)
     { 
       $query = $this-> buildQueryFilter($params);
+      $orderby = (isset($params['orderby']) && $this->validOrderBy($params['orderby'])) ? $params['orderby'] : 'price';
       $order = isset($params['order']) ? $params['order'] : 'DESC';
-      $query .= " ORDER BY price $order";
+      $query .= " ORDER BY $orderby $order";
       if (isset($params['page']) && isset($params['limit']))
       { 
         $page = $params['page'];
@@ -115,6 +116,11 @@
         return "price >= " . $min . " AND price < " . $max;
     } 
     
+    private function validOrderBy($orderby)
+    {
+      return ($orderby == "name" || $orderby == "description" || $orderby == "price") ? true : false;
+    }
+
   }
   
 ?>
