@@ -65,18 +65,56 @@
 
     private function buildQueryIndex($params)
     { 
-      $order = isset($_GET['order']) ? $_GET['order'] : 'DESC';
-      $query = "SELECT i.*, c.name 'category_name' FROM Item i INNER JOIN Category c ON i.fk_id_category = c.id ORDER BY price $order";
-      if (isset($_GET['page']) && isset($_GET['limit']))
+      $query = $this-> buildQueryFilter($params);
+      $order = isset($params['order']) ? $params['order'] : 'DESC';
+      $query .= " ORDER BY price $order";
+      if (isset($params['page']) && isset($params['limit']))
       { 
-        $page = $_GET['page'];
-        $limit = $_GET['limit'];
+        $page = $params['page'];
+        $limit = $params['limit'];
         $offset = (($page - 1) * $limit);
-        $query .= " LIMIT $limit OFFSET $offset";
+        $query .= " LIMIT $limit OFFSET $offset ";
       }
+
       return $query;
     }
 
+    private function buildQueryFilter($params)
+    {
+      $query = "SELECT i.*,  c.name 'category_name' FROM Item i INNER JOIN Category c ON i.fk_id_category = c.id WHERE ";
+      $queryName = isset($params['name']) ? $this->filterName($params['name']) : null;
+      $min = (isset($params['min'])) ? $params['min'] : -1;
+      $max = (isset($params['max'])) ? $params['max'] : -1;
+      $queryPrice = ($min >= 0 || $max > 0) ? $this->filterPrice($min, $max) : null;
+      if ($queryName != null)
+        $query .= $queryName . " AND ";
+      if ($queryPrice != null)
+        $query .= $queryPrice . " AND ";
+      if (($queryName != null) || ($queryPrice != null))
+        $query = rtrim($query, " AND ");
+      else
+        $query = rtrim($query, " WHERE ");
+      return $query;
+    }
+
+    private function filterName($name = null)
+    {
+      if (!empty($name))
+        return "i.name LIKE '%". strval($name). "%' ";
+      else return null;  
+    }
+    private function filterPrice($min, $max)
+    { 
+      if (empty($min) && $max > 0) 
+        return "price <= " . $max;
+      elseif (empty($max) && $min >= 0) 
+        return "price >= " . $min;
+      elseif ($min > $max) 
+        return null;
+      else 
+        return "price >= " . $min . " AND price < " . $max;
+    } 
+    
   }
   
 ?>
