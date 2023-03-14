@@ -3,6 +3,7 @@
   require_once './app/models/category_model.php';
   require_once './app/models/item_model.php';
   require_once './app/views/json_view.php';
+  require_once './app/helpers/auth_helper.php';
 
   class ItemController 
   {
@@ -10,6 +11,7 @@
     private $itemModel;
     private $controllerHelper;
     private $date;
+    private $authHelper;
 
     public function __construct()
     {
@@ -17,6 +19,7 @@
       $this->itemModel = new ItemModel();
       $this->jsonView = new JSONView();
       $this->date = file_get_contents("php://input");
+      $this->authHelper = new AuthHelper();
     }
 
     private function getDate()
@@ -46,6 +49,12 @@
     
     public function create($params = null)
     { 
+      if (!$this->authHelper->isLoggedIn()) 
+      {
+        $this->jsonView->response("Unauthorized", 401);
+        return;
+      }
+
       $body = $this->getDate();
       if (!empty($body->name) && !empty($body->description) && !empty($body->price) && !empty($body->fk_id_category) && ($this->categoryModel->exists($body->fk_id_category)))
       {
@@ -58,7 +67,13 @@
     }
 
     public function update($params = null)
-    {
+    { 
+      if (!$this->authHelper->isLoggedIn()) 
+      {
+        $this->jsonView->response("Unauthorized", 401);
+        return;
+      }
+
       if ($this->itemModel->exists($params[":id"]))
       {
         $body = $this->getDate();
@@ -77,6 +92,12 @@
 
     public function delete($params = null)
     {
+      if (!$this->authHelper->isLoggedIn()) 
+      {
+        $this->jsonView->response("Unauthorized", 401);
+        return;
+      }
+
       if ($this->itemModel->exists($params[":id"]))
       {
         $this->itemModel->delete($params[":id"]);
