@@ -139,7 +139,7 @@ Ejemplo de respuesta:
 ]
 ~~~
 
-### PUT /item/:id
+### DELETE /item/:id
 
 Se encarga de eliminar un item en la base de datos a partir del id especificado con el pathparam. Para utilizar este endpoint es necesario baerer token. 
 
