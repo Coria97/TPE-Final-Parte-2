@@ -25,8 +25,8 @@
 
     public function create($params)
     {
-      $query = $this->db->prepare("INSERT INTO Item (name, description, price, fk_id_category) VALUES (?,?,?,?)");
-      $query->execute([$params->name,$params->description,$params->price,$params->fk_id_category]);
+      $query = $this->db->prepare("INSERT INTO Item (name, description, price, image, fk_id_category) VALUES (?,?,?,?,?)");
+      $query->execute([$params->name,$params->description,$params->price, $params->image, $params->fk_id_category]);
       return $this->db->lastInsertId();
     }
 

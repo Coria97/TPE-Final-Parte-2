@@ -56,7 +56,7 @@
       }
 
       $body = $this->getDate();
-      if (!empty($body->name) && !empty($body->description) && !empty($body->price) && !empty($body->fk_id_category) && ($this->categoryModel->exists($body->fk_id_category)))
+      if (!empty($body->name) && !empty($body->description) && !empty($body->price) && !empty($body->image) &&!empty($body->fk_id_category) && ($this->categoryModel->exists($body->fk_id_category)))
       {
         $id = $this->itemModel->create($body);
         $item = $this->itemModel->show($id);
@@ -81,7 +81,7 @@
         {
           $this->itemModel->update($params[":id"],$body);
           $item = $this->itemModel->show($params[":id"]);
-          $this->jsonView->response($item, 201); 
+          $this->jsonView->response($item, 200); 
         }
         else
           $this->jsonView->response("Unprocessable Entity", 422);
